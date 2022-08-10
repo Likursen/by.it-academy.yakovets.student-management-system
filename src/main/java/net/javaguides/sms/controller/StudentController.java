@@ -9,8 +9,7 @@ import net.javaguides.sms.service.StudentService;
 
 @Controller
 public class StudentController {
-	
-	private StudentService studentService;
+		private StudentService studentService;
 
 	public StudentController(StudentService studentService) {
 		super();
@@ -26,12 +25,10 @@ public class StudentController {
 	
 	@GetMapping("/students/new")
 	public String createStudentForm(Model model) {
-		
-		// create student object to hold student form data
+				// create student object to hold student form data
 		Student student = new Student();
 		model.addAttribute("student", student);
 		return "create_student";
-		
 	}
 	
 	@PostMapping("/students")
@@ -50,7 +47,6 @@ public class StudentController {
 	public String updateStudent(@PathVariable Long id,
 			@ModelAttribute("student") Student student,
 			Model model) {
-		
 		// get student from database by id
 		Student existingStudent = studentService.getStudentById(id);
 		existingStudent.setId(id);
@@ -62,13 +58,33 @@ public class StudentController {
 		studentService.updateStudent(existingStudent);
 		return "redirect:/students";		
 	}
+
+	@PutMapping("/students/{id}")
+	public String updateStudentWithPutMethod(@PathVariable Long id,
+								@ModelAttribute("student") Student student,
+								Model model) {
+		// get student from database by id
+		Student existingStudent = studentService.getStudentById(id);
+		existingStudent.setId(id);
+		existingStudent.setFirstName(student.getFirstName());
+		existingStudent.setLastName(student.getLastName());
+		existingStudent.setEmail(student.getEmail());
+
+		// save updated student object
+		studentService.updateStudent(existingStudent);
+		return "redirect:/students";
+	}
 	
 	// handler method to handle delete student request
-	
 	@GetMapping("/students/{id}")
 	public String deleteStudent(@PathVariable Long id) {
 		studentService.deleteStudentById(id);
 		return "redirect:/students";
 	}
-	
+
+    @DeleteMapping("/students/{id}")
+    public String deleteStudentWithDeleteMethod(@PathVariable Long id) {
+        studentService.deleteStudentById(id);
+        return "redirect:/students";
+    }
 }
